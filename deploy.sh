@@ -1,11 +1,11 @@
 if [ "$1" == production ]
 then
 	echo 'configuring app for production environment...'
-	app_id=packt-love
+	app_id=your-app-id
 elif [ "$1" == serve ]
 then
 	echo 'configuring app for serve environment...'
-	app_id=packt-love
+	app_id=your-app-id
 else
 	echo 'bad argument. Allowed arguments are [production, staging, serve].'
 	exit 1
