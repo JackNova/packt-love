@@ -2,13 +2,14 @@
 
 - edit you configuration variables in app_config.py
 - create a project on google-app-engine and ensure to update the deployment script with your application id (replace your-app-id)
+- set your account email in the Daily exception report section of the cron.yaml file
 
-chmod 755 deploy.sh
+    chmod 755 deploy.sh
 
-#launch the application locally
+###launch the application locally
 
     ./deploy.sh serve
 
-#publish the app
+###publish the app
 
     ./deploy.sh production

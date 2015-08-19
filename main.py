@@ -3,6 +3,9 @@ from helpers import scrape, send_email
 from app_config import config
 import logging
 import urllib2, urllib, cookielib
+from google.appengine.ext import ereporter
+
+ereporter.register_logger()
 
 login_details = {
 	"email": config["PACKT_EMAIL"],
