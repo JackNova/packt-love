@@ -10,6 +10,8 @@ import urllib2
 from google.appengine.api import mail
 from app_config import config
 
+from google.appengine.api import urlfetch
+urlfetch.set_default_fetch_deadline(45)
 
 USER_EMAIL = config['USER_EMAIL']
 def send_email(book_title, book_description, book_image):
