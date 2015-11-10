@@ -4,6 +4,7 @@ from app_config import config
 import logging
 import urllib2, urllib, cookielib
 from google.appengine.ext import ereporter
+from google.appengine.api import taskqueue
 
 ereporter.register_logger()
 
@@ -23,8 +24,8 @@ opener = urllib2.build_opener(http_handler)
 
 url = 'https://www.packtpub.com/packt/offers/free-learning'
 
-class MainHandler(webapp2.RequestHandler):
-	def get(self):
+class TaskHandler(webapp2.RequestHandler):
+	def post(self):
 		# scrape essential informations
 		get_book_url, book_title, new_form_id, image_url, book_description = scrape(url,
 			"//a[contains(@class, 'twelve-days-claim')]/@href",
@@ -60,6 +61,12 @@ class MainHandler(webapp2.RequestHandler):
 		self.response.write('done')
 
 
+class MainHandler(webapp2.RequestHandler):
+	def get(self):
+		taskqueue.add(url='/task')
+
+
 app = webapp2.WSGIApplication([
-	('/', MainHandler)
+	('/', MainHandler),
+	('/task', TaskHandler)
 ], debug=True)
