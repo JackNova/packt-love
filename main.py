@@ -44,7 +44,7 @@ class TaskHandler(webapp2.RequestHandler):
 		# login
 		login_payload = urllib.urlencode(login_details)
 		login_request = urllib2.Request(url, login_payload, {'content-type': 'application/x-www-form-urlencoded'})
-		login_response = opener.open(login_request)
+		login_response = opener.open(login_request, timeout=45)
 		login_failed = login_error in login_response.read()
 
 		if login_failed:
@@ -53,7 +53,7 @@ class TaskHandler(webapp2.RequestHandler):
 			return
 
 		# grab book
-		grab_book = opener.open('https://www.packtpub.com' + get_book_url)
+		grab_book = opener.open('https://www.packtpub.com' + get_book_url, timeout=45)
 		grab_book_response = grab_book.read()
 
 		send_email(book_title, book_description, 'https:'+image_url)

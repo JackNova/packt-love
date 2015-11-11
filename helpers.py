@@ -10,9 +10,6 @@ import urllib2
 from google.appengine.api import mail
 from app_config import config
 
-from google.appengine.api import urlfetch
-urlfetch.set_default_fetch_deadline(45)
-
 USER_EMAIL = config['USER_EMAIL']
 def send_email(book_title, book_description, book_image):
 	message = mail.EmailMessage(sender="packt-love <%s>" % USER_EMAIL,
@@ -29,7 +26,7 @@ def send_email(book_title, book_description, book_image):
 	message.send()
 
 def fetch_and_get_dom(request_url):
-    response = urllib2.urlopen(request_url)
+    response = urllib2.urlopen(request_url, timeout=45)
     raw_html = response.read()
     dom = html.fromstring(raw_html)
     return dom
