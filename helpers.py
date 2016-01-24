@@ -25,14 +25,13 @@ def send_email(book_title, book_description, book_image):
 
 	message.send()
 
-def fetch_and_get_dom(request_url):
+def curl(request_url):
     response = urllib2.urlopen(request_url, timeout=45)
     raw_html = response.read()
-    dom = html.fromstring(raw_html)
-    return dom
+    return raw_html
 
-def scrape(url, *args):
-	dom = fetch_and_get_dom(url)
+def scrape(raw_html, *args):
+	dom = html.fromstring(raw_html)
 	results = []
 	for xpression in args:
 		x = dom.xpath(xpression)

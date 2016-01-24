@@ -1,5 +1,5 @@
 import webapp2
-from helpers import scrape, send_email
+from helpers import scrape, send_email, curl
 from app_config import config
 import logging
 import urllib2, urllib, cookielib
@@ -27,7 +27,8 @@ url = 'https://www.packtpub.com/packt/offers/free-learning'
 class TaskHandler(webapp2.RequestHandler):
 	def post(self):
 		# scrape essential informations
-		get_book_url, book_title, new_form_id, image_url, book_description = scrape(url,
+		raw_html = curl(url)
+		get_book_url, book_title, new_form_id, image_url, book_description = scrape(raw_html,
 			"//a[contains(@class, 'twelve-days-claim')]/@href",
 			"//div[contains(@class, 'dotd-title')]",
 			"//input[@type='hidden'][starts-with(@id, 'form')][starts-with(@value, 'form')]/@value",
