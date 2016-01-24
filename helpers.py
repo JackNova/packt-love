@@ -7,7 +7,10 @@ except ImportError:
     from lxml import html
     
 import urllib2
-from google.appengine.api import mail
+try:
+    from google.appengine.api import mail
+except Exception, e:
+    pass
 from app_config import config
 
 USER_EMAIL = config['USER_EMAIL']
