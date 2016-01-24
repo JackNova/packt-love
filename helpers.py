@@ -44,3 +44,21 @@ def scrape(raw_html, *args):
 			results.append(x[0].strip())
 			
 	return tuple(results)
+
+def scrape_many(raw_html, *xpressions):
+    dom = html.fromstring(raw_html)
+    results = []
+    for xpression in xpressions:
+        r = dom.xpath(xpression)
+        try:
+            results.append([x.text_content().strip() for x in r])
+        except:
+            results.append([x.strip() for x in r])
+
+    return tuple(results)
+
+def generate_download_urls(product_id):
+    base_ebook_url = "https://www.packtpub.com/ebook_download/" + product_id + '/'
+    xs = [base_ebook_url + x for x in ['pdf', 'epub', 'mobi']]
+    xs.append("https://www.packtpub.com/code_download/" + product_id + '/')
+    return set(xs)
