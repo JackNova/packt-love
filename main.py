@@ -24,7 +24,7 @@ opener = urllib2.build_opener(http_handler)
 
 url = 'https://www.packtpub.com/packt/offers/free-learning'
 
-class TaskHandler(webapp2.RequestHandler):
+class PurchaseFreeEbookTask(webapp2.RequestHandler):
 	def post(self):
 		# scrape essential informations
 		raw_html = curl(url)
@@ -62,12 +62,12 @@ class TaskHandler(webapp2.RequestHandler):
 		self.response.write('done')
 
 
-class MainHandler(webapp2.RequestHandler):
+class SchedulePurchaseFreeEBook(webapp2.RequestHandler):
 	def get(self):
-		taskqueue.add(url='/task')
+		taskqueue.add(url='/task/purchase-free-ebook')
 
 
 app = webapp2.WSGIApplication([
-	('/', MainHandler),
-	('/task', TaskHandler)
+	('/schedule-purchase-free-ebook', SchedulePurchaseFreeEBook),
+	('/task/purchase-free-ebook', PurchaseFreeEbookTask)
 ], debug=True)
