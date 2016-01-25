@@ -1,4 +1,4 @@
-from helpers import scrape, scrape_many, generate_download_urls
+from model import scrape, scrape_many, generate_download_urls
 from fixtures import raw_html, my_ebooks_page
 
 def test_scrape():

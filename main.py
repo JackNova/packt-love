@@ -1,5 +1,5 @@
 import webapp2
-from helpers import scrape, send_email, curl
+from model import scrape, send_email, curl
 from app_config import config
 import logging
 import urllib2, urllib, cookielib
