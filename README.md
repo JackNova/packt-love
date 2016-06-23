@@ -30,7 +30,13 @@ The **USER_EMAIL** field is used to send you a daily email notification with det
 > appcfg.py -A your-project-id update /packt-love 
 
 
-## Launch the local server for local development
+# Launch the local server for local development
 
 > dev_appserver.py --port=9988 . --log_level=debug # --clear_datastore=yes
 > 
+
+# Run tests
+
+```bash
+python -m unittest functional_test
+```
