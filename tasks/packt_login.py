@@ -12,19 +12,9 @@ login_error = 'Sorry, you entered an invalid email address and password combinat
 
 
 class Credentials(ndb.Model):
-
-    def __init__(self, user_email):
-        super(Credentials, self).__init__(id=user_email)
-        self.user_email = user_email
-
-    user_email = ndb.StringProperty(indexed=True, required=True)
-    cookies = ndb.PickleProperty(indexed=False, required=True)
+    cookies = ndb.PickleProperty(indexed=False, repeated=True)
     updated = ndb.DateTimeProperty(auto_now=True)
     created = ndb.DateTimeProperty(auto_now_add=True)
-
-    @classmethod
-    def get_by_email(cls, email):
-        return cls.get_by_id(email)
 
 
 class PacktLoginRequestHandler(webapp2.RequestHandler):
@@ -66,11 +56,11 @@ class PacktLoginRequestHandler(webapp2.RequestHandler):
             self.error(401)
             return
 
-        record = Credentials(user_email=config["PACKT_EMAIL"])
+        record = Credentials(id=config["PACKT_EMAIL"])
         cookie_list = [c for c in cj]
         record.cookies = cookie_list
         record.put()
 
         logging.info("login succeded")
         logging.info("credentials have been saved: ")
-        logging.info(cj.__dict__)
+        logging.info(cookie_list)

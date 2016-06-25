@@ -7,7 +7,7 @@ import urllib
 import cookielib
 from google.appengine.ext import ereporter
 from google.appengine.api import taskqueue
-from tasks.packt_login import PacktLoginRequestHandler
+from tasks.packt_login import PacktLoginRequestHandler, Credentials
 
 ereporter.register_logger()
 
@@ -26,49 +26,6 @@ http_handler = urllib2.HTTPCookieProcessor(cj)
 opener = urllib2.build_opener(http_handler)
 
 url = 'https://www.packtpub.com/packt/offers/free-learning'
-
-
-def login():
-
-    cj = cookielib.CookieJar()
-    http_handler = urllib2.HTTPCookieProcessor(cj)
-    opener = urllib2.build_opener(http_handler)
-
-    # just need the new_form_id for logging in
-    raw_html = curl(url)
-    new_form_id, = scrape(
-        raw_html,
-        "//input[@type='hidden'][starts-with(@id, 'form')][starts-with(@value, 'form')]/@value"
-    )
-
-    login_details = {
-        "email": config["PACKT_EMAIL"],
-        "password": config["PACKT_PASSWORD"],
-        "op": "Login",
-        "form_id": "packt_user_login_form",
-        "form_build_id": ""
-    }
-
-    if new_form_id:
-        login_details["form_build_id"] = new_form_id
-
-    # login
-    login_payload = urllib.urlencode(login_details)
-    login_request = urllib2.Request(
-        url, login_payload,
-        {'content-type': 'application/x-www-form-urlencoded'}
-    )
-    login_response = opener.open(login_request, timeout=45)
-    login_failed = login_error in login_response.read()
-
-    if login_failed:
-        logging.error('login failed')
-        self.error(401)
-        return
-
-    logging.info("login succeded")
-
-    return opener
 
 
 class PurchaseFreeEbookTask(webapp2.RequestHandler):
@@ -125,7 +82,15 @@ class SchedulePurchaseFreeEBook(webapp2.RequestHandler):
 class DownloadPurchasedEBooksTask(webapp2.RequestHandler):
 
     def post(self):
-        opener = login()
+        cj = cookielib.CookieJar()
+        # RESTORE CREDENTIALS
+        credentials = Credentials.get_by_id(config["PACKT_EMAIL"])
+        if credentials is not None:
+            for sc in credentials.cookies:
+                cj.set_cookie(sc)
+
+        http_handler = urllib2.HTTPCookieProcessor(cj)
+        opener = urllib2.build_opener(http_handler)
 
         # get all my purchased ebooks ids
         my_ebooks = opener.open(

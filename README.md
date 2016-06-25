@@ -38,5 +38,5 @@ The **USER_EMAIL** field is used to send you a daily email notification with det
 # Run tests
 
 ```bash
-python -m unittest functional_test
+python -m unittest discover
 ```
