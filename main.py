@@ -7,6 +7,7 @@ import urllib
 import cookielib
 from google.appengine.ext import ereporter
 from google.appengine.api import taskqueue
+from tasks.packt_login import PacktLoginRequestHandler
 
 ereporter.register_logger()
 
@@ -150,5 +151,6 @@ app = webapp2.WSGIApplication([
     ('/schedule-purchase-free-ebook', SchedulePurchaseFreeEBook),
     ('/task/purchase-free-ebook', PurchaseFreeEbookTask),
     ('/schedule-download-purchased-ebooks', ScheduleDownloadPurchasedEBooks),
-    ('/task/download-purchased-ebooks', DownloadPurchasedEBooksTask)
+    ('/task/download-purchased-ebooks', DownloadPurchasedEBooksTask),
+    ('/task/login', PacktLoginRequestHandler)
 ], debug=True)
