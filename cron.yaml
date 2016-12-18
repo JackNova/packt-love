@@ -5,5 +5,5 @@ cron:
   timezone: Europe/Rome
 
 - description: Daily exception report
-  url: /_ereporter?sender=your_account_email@you.com&to=your_account_email@you.com
+  url: /_ereporter?sender=dario@jntstudio.net&to=dario@jntstudio.net
   schedule: every day 00:00

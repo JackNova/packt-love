@@ -40,3 +40,12 @@ The **USER_EMAIL** field is used to send you a daily email notification with det
 ```bash
 python -m unittest discover
 ```
+
+# TODO
+
+- refactor purchase to not login if not necessary
+- if purchase fails schedule login 
+- decide if purchase retries by itself with a policy or is scheduled by succesfull login (pass a parameter to login for the next step)
+- generate url for my ebooks pdf, mobi, ...
+- download to google drive if not already downloaded
+- create a manager that is responsible for storing information on downloaded ebooks or use a google drive folder to check each time there without replicating the information
