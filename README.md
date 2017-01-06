@@ -1,15 +1,19 @@
 #Usage
 
-- edit you configuration variables in app_config.py
+- install python, pip, google app engine sdk
 - create a project on google-app-engine and ensure to update the deployment script with your application id (replace your-app-id)
-- set your account email in the Daily exception report section of the cron.yaml file
+- install [jinja2-cli](https://github.com/mattrobenolt/jinja2-cli)
 
-    chmod 755 deploy.sh
 
-###launch the application locally
+- edit you configuration variables in secrets.json
+- cat secrets.json | jinja2 app_config.py.tpl > app_config.py
+- cat secrets.json | jinja2 cron.yaml.tpl > cron.yaml
 
-    ./deploy.sh serve
 
-###publish the app
+# Development
 
-    ./deploy.sh production
+dev_appserver.py --port=9999 .
+
+# Deployment
+
+gcloud app deploy app.yaml --project `[your-project-id]` --version 1
