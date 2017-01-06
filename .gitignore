@@ -3,3 +3,4 @@
 *.sublime-workspace
 app_config.py
 cron.yaml
+my_secrets.json

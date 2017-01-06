@@ -1,5 +1,5 @@
 import webapp2
-from helpers import scrape, send_email
+from helpers import scrape, send_email, send_error_no_content_email
 from app_config import config
 import logging
 import urllib2
@@ -29,7 +29,7 @@ url = 'https://www.packtpub.com/packt/offers/free-learning'
 get_book_url_path = "//a[contains(@class, 'twelve-days-claim')]/@href"
 book_title_path = "//div[contains(@class, 'dotd-title')]"
 new_form_id_path = "//input[@type='hidden'][starts-with(@id, 'form')][starts-with(@value, 'form')]/@value"
-image_url_path = "//img[contains(@class, 'bookimage')]/@src",
+image_url_path = "//img[contains(@class, 'bookimage')]/@src"
 book_description_path = "//*[@id='deal-of-the-day']/div/div/div[2]/div[3]"
 
 
@@ -57,25 +57,33 @@ class TaskHandler(webapp2.RequestHandler):
             get_book_url, book_title, new_form_id, image_url))
         logging.info('book_description: \n %s' % book_description)
 
-        # login
-        login_payload = urllib.urlencode(login_details)
-        login_request = urllib2.Request(
-            url, login_payload,
-            {'content-type': 'application/x-www-form-urlencoded'})
-        login_response = opener.open(login_request, timeout=45)
-        login_failed = login_error in login_response.read()
+        if get_book_url is None:
+            logging.error("impossible to get data. No need to continue")
+            send_error_no_content_email("Error getting new book", """Getting the new book has
+                been impossible. The offer seems to be suspended.
+                You could retry manually by visiting the root
+                page of the application on appengine.
+                The task is not going to be retried authomatically.""")
+        else:
+            # login
+            login_payload = urllib.urlencode(login_details)
+            login_request = urllib2.Request(
+                url, login_payload,
+                {'content-type': 'application/x-www-form-urlencoded'})
+            login_response = opener.open(login_request, timeout=45)
+            login_failed = login_error in login_response.read()
 
-        if login_failed:
-            logging.error('login failed')
-            self.error(401)
-            return
+            if login_failed:
+                logging.error('login failed')
+                self.error(401)
+                return
 
-        # grab book
-        grab_book = opener.open(
-            'https://www.packtpub.com' + get_book_url, timeout=45)
-        grab_book_response = grab_book.read()
+            # grab book
+            grab_book = opener.open(
+                'https://www.packtpub.com' + get_book_url, timeout=45)
+            grab_book_response = grab_book.read()
 
-        send_email(book_title, book_description, 'https:'+image_url)
+            send_email(book_title, book_description, 'https:'+image_url)
 
         self.response.write('done')
 
