@@ -1,5 +1,7 @@
 import webapp2
-from helpers import scrape, send_email, send_error_no_content_email
+from helpers import send_email, send_error_no_content_email
+from packt_scraper import scrape
+from packt_scraper import fetch_and_get_text
 from app_config import config
 import logging
 import urllib2
@@ -26,7 +28,7 @@ http_handler = urllib2.HTTPCookieProcessor(cj)
 opener = urllib2.build_opener(http_handler)
 
 url = 'https://www.packtpub.com/packt/offers/free-learning'
-get_book_url_path = "//a[contains(@class, 'twelve-days-claim')]/@href"
+get_book_url_path = "//*[@id='free-learning-form']/@action"
 book_title_path = "//div[contains(@class, 'dotd-title')]"
 new_form_id_path = "//input[@type='hidden'][starts-with(@id, 'form')][starts-with(@value, 'form')]/@value"
 image_url_path = "//img[contains(@class, 'bookimage')]/@src"
@@ -37,12 +39,12 @@ class TaskHandler(webapp2.RequestHandler):
 
     def post(self):
         # scrape essential informations
-
+        page_text = fetch_and_get_text(url)
         (get_book_url,
             book_title,
             new_form_id,
             image_url,
-            book_description) = scrape(url,
+            book_description) = scrape(page_text,
                                        get_book_url_path,
                                        book_title_path,
                                        new_form_id_path,
@@ -80,7 +82,8 @@ class TaskHandler(webapp2.RequestHandler):
 
             # grab book
             grab_book = opener.open(
-                'https://www.packtpub.com' + get_book_url, timeout=45)
+                'https://www.packtpub.com' + get_book_url,
+                data=None, timeout=45)
             grab_book_response = grab_book.read()
 
             send_email(book_title, book_description, 'https:'+image_url)

@@ -1,6 +1,4 @@
-from lxml import html
 import logging
-import urllib2
 from google.appengine.api import mail
 from app_config import config
 
@@ -33,28 +31,3 @@ def send_error_no_content_email(subject, body):
     </body></html>""" % (subject, body)
 
     message.send()
-
-
-def fetch_and_get_dom(request_url):
-    response = urllib2.urlopen(request_url, timeout=45)
-    raw_html = response.read()
-    logging.info(raw_html)
-    dom = html.fromstring(raw_html)
-    return dom
-
-
-def scrape(url, *args):
-    dom = fetch_and_get_dom(url)
-    results = []
-    for xpression in args:
-        x = dom.xpath(xpression)
-        if len(x) > 0:
-            try:
-                results.append(x[0].text_content().strip())
-            except:
-                results.append(x[0].strip())
-        else:
-            logging.error("cant'find path %s in content" % xpression)
-            results.append(None)
-
-    return tuple(results)
