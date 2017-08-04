@@ -20,3 +20,8 @@ libraries:
   version: "2.5.2"
 - name: lxml
   version: "2.3"
+
+env_variables:
+  PACKT_EMAIL: 'the email you use in your packt account'
+  PACKT_PASSWORD: 'password for your account'
+  USER_EMAIL: 'the email where you wish to receive notifications'

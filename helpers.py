@@ -1,8 +1,8 @@
 import logging
 from google.appengine.api import mail
-from app_config import config
+import os
 
-USER_EMAIL = config['USER_EMAIL']
+USER_EMAIL = os.environ.get('USER_EMAIL')
 
 
 def send_email(book_title, book_description, book_image=None):

@@ -1,8 +1,8 @@
+import os
 import webapp2
 from helpers import send_email, send_error_no_content_email
 from packt_scraper import scrape
 from packt_scraper import fetch_and_get_text
-from app_config import config
 import logging
 import urllib2
 import urllib
@@ -13,8 +13,8 @@ from google.appengine.api import taskqueue
 ereporter.register_logger()
 
 login_details = {
-    "email": config["PACKT_EMAIL"],
-    "password": config["PACKT_PASSWORD"],
+    "email": os.environ.get("PACKT_EMAIL"),
+    "password": os.environ.get("PACKT_PASSWORD"),
     "op": "Login",
     "form_id": "packt_user_login_form",
     "form_build_id": ""
